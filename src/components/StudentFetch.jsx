@@ -2,6 +2,8 @@ import Axios from "axios";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import loadGif from '../assets/page-loading.gif'; // Assuming the GIF is stored in the 'assets' folder
+// or this you can use
+//import loadGif from '../assets/page-loading1.gif'; // Assuming the GIF is stored in the 'assets' folder
 
 /*
 In React Router v5.2.0, useHistory is used for programmatic navigation, whereas in newer versions (v6+), useNavigate replaces useHistory for navigation.
@@ -103,7 +105,7 @@ let StudentFetch = () => {
                 {/* Show loading GIF if data is still being fetched */}
                 {isLoading ? (
                     <div className="text-center">
-                        <img src={loadGif} alt="Loading..." height="50px" width="50px" />
+                        <img src={loadGif} alt="Loading..." height="200px" width="180px" />
                     </div>
                 ) : (
                     <table className="table table-bordered">
