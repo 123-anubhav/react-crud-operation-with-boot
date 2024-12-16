@@ -235,33 +235,29 @@ This component allows the user to:
 
 ---
 
-### 4. **StudentUpdateQueryParam**
+### 4. **StudentUpdate.jsx (Path Parameter)**
 
-This component handles the updating of student records using **query parameters**.
+Handles the updating of student records using **path parameters**.
 
 ```jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const StudentUpdateQueryParam = () => {
+const StudentUpdate = () => {
+  const { idFromParam } = useParams(); // Path parameter
   const [student, setStudent] = useState({
     id: '',
     name: '',
     email: '',
     mobileNumber: ''
   });
-
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const queryParams = new URLSearchParams(location.search);
-  const studentId = queryParams.get('queryParamId');
 
   useEffect(() => {
-    if (studentId) {
+    if (idFromParam) {
       axios
-        .get(`http://localhost:8080/api/students/${studentId}`)
+        .get(`http://localhost:8080/api/students/${idFromParam}`)
         .then((response) => {
           setStudent(response.data);
         })
@@ -269,7 +265,7 @@ const StudentUpdateQueryParam = () => {
           console.error('Error fetching student:', error);
         });
     }
-  }, [studentId]);
+  }, [idFromParam]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -335,55 +331,128 @@ const StudentUpdateQueryParam = () => {
   );
 };
 
-export default StudentUpdateQueryParam;
+export default StudentUpdate;
 ```
 
 This component:
-- Fetches student data using the **query parameter** (`?queryParamId={id}`).
+- Fetches student data using the **path parameter** (`/update/:id`).
 - Displays the current student details in a form.
 - Allows the user to update the student and submit the changes to the backend.
 
 ---
 
-## Technology Stack
+### 5. **StudentUpdateQueryParam**
 
-### **Frontend**
-- **React**: React Router DOM for navigation and React hooks (`useState`, `useEffect`, `useNavigate`).
-- **Axios**: For handling HTTP requests and interacting with the backend API.
-- **Bootstrap**: For responsive UI design and styling.
+Handles the updating of student records using **query parameters**.
 
-### **Backend**
-- **Node.js** or **Spring Boot** (Assumed as the backend server for CRUD operations).
+```jsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate, useLocation } from 'react-router-dom';
 
----
+const StudentUpdateQueryParam = () => {
+  const [student, setStudent] = useState({
+    id: '',
+    name: '',
+    email: '',
+    mobileNumber: ''
+  });
 
-## Installation & Setup
+  const navigate = useNavigate();
+  const location = useLocation();
 
-1. **Clone the Repository**:
-   ```bash
-   git clone <repository-url>
-   cd react-crud-app
-   ```
+  const queryParams = new URLSearchParams(location.search);
+  const studentId = queryParams.get('queryParamId');
 
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
+  useEffect(() => {
+    if (studentId) {
+      axios
+        .get(`http://localhost:8080/api/students/${studentId}`)
+        .then((response) => {
+          setStudent(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching student:', error);
+        });
+    }
+  }, [studentId]);
 
-3. **Start the Application**:
-   ```bash
-   npm start
-   ```
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setStudent({ ...student, [name]: value });
+  };
 
-4. **Backend Server**:
-   Ensure the backend server is running and configured at `http://localhost:8080`.
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .put(`http://localhost:8080/api/students/${student.id}`, student)
+      .then(() => {
+        alert('Student updated successfully');
+        navigate('/get-all');
+      })
+      .catch((error) => {
+        console.error('Error updating student:', error);
+        alert('Failed to update student');
+      });
+  };
 
+  return (
+    <div className="container">
+      <h2>Update Student</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="name">Name:</label>
+          <input
+            type="text"
+            className="form-control"
+            id="name"
+            name="name"
+            value={student.name}
+            onChange={handleInputChange
 
+}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            className="form-control"
+            id="email"
+            name="email"
+            value={student.email}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="mobileNumber">Mobile Number:</label>
+          <input
+            type="text"
+            className="form-control"
+            id="mobileNumber"
+            name="mobileNumber"
+            value={student.mobileNumber}
+            onChange={handleInputChange}
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">
+          Update Student
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default StudentUpdateQueryParam;
+```
+
+This component:
+- Uses query parameters to retrieve the student ID (`/update?queryParamId={id}`).
+- Similar functionality to the `StudentUpdate` component but with query parameters.
 
 ---
 
 ## Conclusion
 
-This React-based CRUD application demonstrates how to manage student records efficiently using frontend React hooks and backend integration for CRUD operations. The code includes basic error handling, data fetching, and user-friendly navigation.
-
+This React-based CRUD application provides functionality to create, read, update, and delete student records. It utilizes React's hooks for state management, Axios for backend communication, and Bootstrap for styling. The application is responsive and supports different ways of updating student data: via path variables and query parameters.
 
